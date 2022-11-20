@@ -1,16 +1,16 @@
 import torch.nn as nn
 import copy
 import torch
-import embedding.TokenEmbedding as TokenEmbedding
-import embedding.PositionalEncoding as PositionalEncoding
-import embedding.TransformerEmbedding as TransformerEmbedding
-import SubLayer.MultiHeadAttentionLayer as MultiHeadAttentionLayer
-import SubLayer.PositionWiseFeedForwardLayer as PositionWiseFeedForwardLayer
-import encoder.Encoder as Encoder
-import encoder.EncoderBlock as EncoderBlock
-import decoder.Decoder as Decoder
-import decoder.DecoderBlock as DecoderBlock
-import Transformer.Transformer as Transformer
+import embedding.tokenEmbedding as tokenEmbedding
+import embedding.positionalEncoding as positionalEncoding
+import embedding.transformerEmbedding as transformerEmbedding
+import subLayer.multiHeadAttentionLayer as multiHeadAttentionLayer
+import subLayer.positionWiseFeedForwardLayer as positionWiseFeedForwardLayer
+import encoder.encoder as Encoder
+import encoder.encoderBlock as EncoderBlock
+import decoder.decoder as Decoder
+import decoder.decoderBlock as decoderBlock
+import transformer.transformer as transformer
 
 def build_model(src_vocab_size,
                 tgt_vocab_size,
@@ -24,33 +24,33 @@ def build_model(src_vocab_size,
                 dr_rate = 0.1,
                 norm_eps = 1e-5):
 
-    src_token_embed = TokenEmbedding(
+    src_token_embed = tokenEmbedding(
                                      d_embed = d_embed,
                                      vocab_size = src_vocab_size)
-    tgt_token_embed = TokenEmbedding(
+    tgt_token_embed = tokenEmbedding(
                                      d_embed = d_embed,
                                      vocab_size = tgt_vocab_size)
-    pos_embed = PositionalEncoding(
+    pos_embed = positionalEncoding(
                                    d_embed = d_embed,
                                    max_len = max_len,
                                    device = device)
 
-    src_embed = TransformerEmbedding(
+    src_embed = transformerEmbedding(
                                      token_embed = src_token_embed,
                                      pos_embed = copy(pos_embed),
                                      dr_rate = dr_rate)
-    tgt_embed = TransformerEmbedding(
+    tgt_embed = transformerEmbedding(
                                      token_embed = tgt_token_embed,
                                      pos_embed = copy(pos_embed),
                                      dr_rate = dr_rate)
 
-    attention = MultiHeadAttentionLayer(
+    attention = multiHeadAttentionLayer(
                                         d_model = d_model,
                                         h = h,
                                         qkv_fc = nn.Linear(d_embed, d_model),
                                         out_fc = nn.Linear(d_model, d_embed),
                                         dr_rate = dr_rate)
-    position_ff = PositionWiseFeedForwardLayer(
+    position_ff = positionWiseFeedForwardLayer(
                                                fc1 = nn.Linear(d_embed, d_ff),
                                                fc2 = nn.Linear(d_ff, d_embed),
                                                dr_rate = dr_rate)
@@ -61,7 +61,7 @@ def build_model(src_vocab_size,
                                  position_ff = copy(position_ff),
                                  norm = copy(norm),
                                  dr_rate = dr_rate)
-    decoder_block = DecoderBlock(
+    decoder_block = decoderBlock(
                                  self_attention = copy(attention),
                                  cross_attention = copy(attention),
                                  position_ff = copy(position_ff),
@@ -78,7 +78,7 @@ def build_model(src_vocab_size,
                       norm = copy(norm))
     generator = nn.Linear(d_model, tgt_vocab_size)
 
-    model = Transformer(
+    model = transformer(
                         src_embed = src_embed,
                         tgt_embed = tgt_embed,
                         encoder = encoder,

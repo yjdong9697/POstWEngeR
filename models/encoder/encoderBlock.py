@@ -1,13 +1,13 @@
 import torch.nn as nn
 import copy
-import SubLayer.ResidualConnectionLayer as ResidualConnectionLayer
+import subLayer.residualConnectionLayer as residualConnectionLayer
 
 class EncoderBlock(nn.Module):
     def __init__(self, self_attention, positional_ff, norm, dr_rate = 0):
         super(EncoderBlock, self).__init__()
         self.self_attention = self_attention
-        self.residual1 = ResidualConnectionLayer(copy.deepcopy(norm), dr_rate)
-        self.residual2 = ResidualConnectionLayer(copy.deepcopy(norm, dr_rate))
+        self.residual1 = residualConnectionLayer(copy.deepcopy(norm), dr_rate)
+        self.residual2 = residualConnectionLayer(copy.deepcopy(norm, dr_rate))
         self.position_ff = positional_ff
 
     def forward(self, src, src_mask):

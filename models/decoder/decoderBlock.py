@@ -1,15 +1,15 @@
 import torch.nn as nn
 import copy
-import SubLayer.ResidualConnectionLayer as ResidualConnectionLayer
+import subLayer.residualConnectionLayer as residualConnectionLayer
 
 class DecoderBlock(nn.Module):
 
     def __init__(self, self_attention, cross_attention, position_ff, norm, dr_rate = 0):
         super(DecoderBlock, self).__init__()
         self.self_attention = self_attention
-        self.residual1 = ResidualConnectionLayer(copy.deepcopy(norm), dr_rate)
-        self.residual2 = ResidualConnectionLayer(copy.deepcopy(norm), dr_rate)
-        self.residual3 = ResidualConnectionLayer(copy.deepcopy(norm), dr_rate)
+        self.residual1 = residualConnectionLayer(copy.deepcopy(norm), dr_rate)
+        self.residual2 = residualConnectionLayer(copy.deepcopy(norm), dr_rate)
+        self.residual3 = residualConnectionLayer(copy.deepcopy(norm), dr_rate)
         self.cross_attention = cross_attention
         self.position_ff = position_ff
 
