@@ -1,8 +1,6 @@
 import torch.nn as nn
 import copy
 import torch
-import torch.functional as F
-import numpy as np
 import embedding.TokenEmbedding as TokenEmbedding
 import embedding.PositionalEncoding as PositionalEncoding
 import embedding.TransformerEmbedding as TransformerEmbedding
