@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
 
-url = "./datasets/uefa.html"
+url = "./datasets/uefa/uefa.html"
 page = open(url, 'rt', encoding = 'utf-8').read()
 soup = BeautifulSoup(page, 'html.parser') 
 t = soup.find_all(attrs= {"class" : "sc-pk-table-row-h sc-pk-table-row-s pk-table--row hydrated"})
@@ -41,4 +41,4 @@ numpy_tmp = np.array(store_tmp).reshape(-1, 12)
 
 result = pd.DataFrame(numpy_tmp, columns = ["team", "league", "2012-2013", "2013-2014", "2014-2015", "2015-2016", "2016-2017", "2017-2018", "2018-2019", "2019-2020", "2020-2021", "2021-2022"])
 
-result.to_csv('./datasets/uefa_result.csv', sep = ',')
+result.to_csv('./uefa/uefa_result.csv', sep = ',')
