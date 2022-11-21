@@ -20,7 +20,7 @@ class MultiHeadAttentionLayer(nn.Module):
         n_k = key.shape[-1]
 
         # QK^T : (n_batch, h, seq_len, d_k) * (n_batch, h, d_k, seq_len) = (n_batch, h, seq_len, seq_len)
-        attention_score = torch.matcul(query, key.transpose(-2, -1)) 
+        attention_score= torch.matmul(query, key.transpose(-2, -1)) 
         attention_score = attention_score / math.sqrt(n_k)
 
         # Check wheter masking or not
@@ -28,7 +28,7 @@ class MultiHeadAttentionLayer(nn.Module):
             attention_score = attention_score.masked_fill(mask == 0, -1e9)
 
         # (n_batch, h, seq_len, seq_len) 즉 가로 단위로 softmax처리를 한 것
-        attention_prob = F.sortmax(attention_score, dim = -1)
+        attention_prob = F.softmax(attention_score, dim = -1)
         attention_prob = self.dropout(attention_prob)
      
         # (n_batch, h, seq_len, seq_len) * (n_batch, h, seq_len, d_k) = (n_batch, h, seq_len, d_k)
