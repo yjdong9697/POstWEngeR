@@ -49,6 +49,7 @@ for league in leagueli:
             year_store = []
             team_store = []
             uefa_store = []
+            performance_store = []
 
             for index, txt in enumerate(year_team):
                 if(index % 2 == 0):
@@ -68,7 +69,40 @@ for league in leagueli:
             for _ in range(len(year_store)):
                 cur_year = year_store[_]
                 cur_team = team_store[_]
-                uefa_score = uefa_coefficient.iloc[cur_team][cur_year]
-                uefa_store.append(uefa_score)
+                if(cur_year != '2022-2023') :
+                    uefa_score = uefa_coefficient.loc[cur_team][cur_year]
+                    uefa_store.append(uefa_score)
+                else:
+                    uefa_store.append(uefa_coefficient.loc[cur_team]['2021-2022']) #2022-2023년 UEFA coefficient는 2021-2022년 UEFA coefficient를 사용
 
-                # 여기다가 선수 능력치만 넣어주면 됨
+            # 여기다가 선수 능력치만 넣어주면 됨
+            player_url = "https://fbref.com/en/search/search.fcgi?search="
+
+            res_player = requests.get(player_url + player_name)
+            soup_player = BeautifulSoup(res_player.content, 'html.parser').contents[3].contents[3].contents[1].contents[21].contents[15].contents[5].contents[1].contents[7]
+
+            year_idx = 0
+            for idx, table_value in enumerate(soup_player):
+                if(idx % 2 == 0):
+                    continue
+                
+                # 선수 별로 performance : goal, assist, non_penalty_gal, penalty_kick_made, yello_card, red_card
+                # 총 6개
+
+                if(table_value.contents[0].contents[0] == year_store[year_idx]):
+                    year_idx += 1
+                    goal = table_value.contents[10].contents[0]
+                    assist = table_value.contents[11].contents[0]
+                    non_penalty_goal = table_value.contents[12].contents[0]
+                    penalty_kick_made = table_value.contents[13].contents[0]
+                    yello_card = table_value.contents[14].contents[0]
+                    red_card = table_value.contents[15].contents[0]
+
+                    performance_store.append(goal)
+                    performance_store.append(assist)
+                    performance_store.append(non_penalty_goal)
+                    performance_store.append(penalty_kick_made)
+                    performance_store.append(yello_card)
+                    performance_store.append(red_card)
+                else:
+                    continue
