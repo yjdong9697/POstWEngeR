@@ -24,18 +24,20 @@ driver.implicitly_wait(3)
 driver.maximize_window()
 
 leagueli = ['premier_league','serie_a',"la_liga",'bundesliga','ligue_1','eredivisie']
-url_pre = "./datasets/"
+url_pre = "./datasets/league/"
 url_post = ".html"
 
 url_player = "https://capology.com"
 
-
+uefa_coefficient = pd.read_csv("datasets/uefa/uefa_result.csv", index_col = 0)
+# 출력 예시 : print(uefa_coefficient.loc["Real Madrid"]["2012-2013"])
 
 for league in leagueli:
     url = url_pre + league + url_post
     page = open(url, 'rt', encoding = 'utf-8').read()
     soup = BeautifulSoup(page, 'html.parser') 
-    t = soup.find_all(attrs= {"class" : "firstcol"})   
+    t = soup.find_all(attrs= {"class" : "firstcol"}) 
+    player_name = soup.contents[0].contents[0].contents[0].contents[0].contents[1]
     for idx, _ in enumerate(t):
         if(idx % 2 == 0):
             driver.get(url_player + _["href"])
@@ -46,6 +48,7 @@ for league in leagueli:
             pay_store = []
             year_store = []
             team_store = []
+            uefa_store = []
 
             for index, txt in enumerate(year_team):
                 if(index % 2 == 0):
@@ -61,3 +64,11 @@ for league in leagueli:
                     payment = txt.text
                     if(payment != "") :
                         pay_store.append(payment)
+
+            for _ in range(len(year_store)):
+                cur_year = year_store[_]
+                cur_team = team_store[_]
+                uefa_score = uefa_coefficient.iloc[cur_team][cur_year]
+                uefa_store.append(uefa_score)
+
+                # 여기다가 선수 능력치만 넣어주면 됨
