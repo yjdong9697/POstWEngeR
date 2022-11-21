@@ -25,7 +25,7 @@ class MultiHeadAttentionLayer(nn.Module):
 
         # Check wheter masking or not
         if mask is not None:
-            attention_score = attention_score.masked_filled(mask == 0, -1e9)
+            attention_score = attention_score.masked_fill(mask == 0, -1e9)
 
         # (n_batch, h, seq_len, seq_len) 즉 가로 단위로 softmax처리를 한 것
         attention_prob = F.sortmax(attention_score, dim = -1)
