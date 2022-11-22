@@ -86,6 +86,11 @@ for league in leagueli:
             year_store.reverse()
             team_store.reverse()
             pay_store.reverse()
+
+            # 10초과분 전부 다 자름
+            year_store = year_store[:min(len(year_store), 10)]
+            team_store = team_store[:min(len(team_store), 10)]
+            pay_store  = pay_store[:min(len(pay_store), 10)]
             
             team_exist = True
             for _ in range(len(year_store)):
@@ -98,7 +103,8 @@ for league in leagueli:
                     else:
                         team_exist = False
                 else:
-                    uefa_store.append(uefa_coefficient.loc[cur_team]['2021-2022']) #2022-2023년 UEFA coefficient는 2021-2022년 UEFA coefficient를 사용
+                    if cur_team in uefa_coefficient.index:
+                        uefa_store.append(uefa_coefficient.loc[cur_team]['2021-2022']) #2022-2023년 UEFA coefficient는 2021-2022년 UEFA coefficient를 사용
 
             # 없는 팀이 존재하는 경우 해당 선수는 무시
             if team_exist == False:
