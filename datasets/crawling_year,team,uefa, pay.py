@@ -60,7 +60,7 @@ for league in leagueli:
                 if(index % 2 == 0):
                     year_tmp = txt.text
                     # 2023-2024년 이후부터는 자름
-                    if(year_tmp > '2022-2023'):
+                    if(year_tmp >= '2022-2023'):
                         flag = False
                         continue
                     else:
@@ -101,9 +101,6 @@ for league in leagueli:
                         uefa_store.append(uefa_score)
                     else:
                         team_exist = False
-                else:
-                    if cur_team in uefa_coefficient.index:
-                        uefa_store.append(uefa_coefficient.loc[cur_team]['2021-2022']) #2022-2023년 UEFA coefficient는 2021-2022년 UEFA coefficient를 사용
 
             # 없는 팀이 존재하는 경우 해당 선수는 무시
             if team_exist == False:
