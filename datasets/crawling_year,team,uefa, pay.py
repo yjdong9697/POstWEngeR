@@ -56,14 +56,16 @@ for league in leagueli:
             gross_pw = driver.find_elements(By.CSS_SELECTOR,'.money-column') # 주급임
 
             flag = False
+            prev_year = ""
             for index, txt in enumerate(year_team):
                 if(index % 2 == 0):
                     year_tmp = txt.text
                     # 2023-2024년 이후부터는 자름
-                    if(year_tmp >= '2022-2023'):
+                    if(year_tmp >= '2022-2023' or prev_year == year_tmp):
                         flag = False
                         continue
                     else:
+                        prev_year = year_tmp
                         year_store.append(year_tmp) 
                         flag = True
                 elif flag == True:
@@ -87,9 +89,9 @@ for league in leagueli:
             pay_store.reverse()
 
             # 10초과분 전부 다 자름
-            year_store = year_store[:min(len(year_store), 10)]
-            team_store = team_store[:min(len(team_store), 10)]
-            pay_store  = pay_store[:min(len(pay_store), 10)]
+            year_store = year_store[max(-len(year_store), -10) : ]
+            team_store = team_store[max(-len(team_store), -10) : ]
+            pay_store  = pay_store[max(-len(pay_store), -10) : ]
             
             team_exist = True
             for _ in range(len(year_store)):
