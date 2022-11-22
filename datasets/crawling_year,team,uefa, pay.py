@@ -54,7 +54,7 @@ for league in leagueli:
             driver.get(url_player + _["href"])
             response = requests.get(url_player + _["href"],headers = header)
             year_team = driver.find_elements(By.CSS_SELECTOR,'.name-column .firstcol')
-            gross_pw = driver.find_elements(By.CSS_SELECTOR,'.money-column') # 52곱해야함
+            gross_pw = driver.find_elements(By.CSS_SELECTOR,'.money-column') # 주급임
 
             flag = False
             for index, txt in enumerate(year_team):
@@ -76,7 +76,7 @@ for league in leagueli:
                 if(index % 3 == 0):
                     payment = txt.text
                     if(payment != "") :
-                        pay_store.append(payment * 52) # 52를 곱해서 연봉이 들어가게끔
+                        pay_store.append(payment)
         
             # 초과하는 부분들은 crop시킴
             if len(pay_store) > len(year_store):
