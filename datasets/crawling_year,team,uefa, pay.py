@@ -65,7 +65,7 @@ for league in leagueli:
                         flag = False
                         continue
                     else:
-                        year_store.append(year_tmp * 52) # 52를 곱해서 연봉이 들어가게끔
+                        year_store.append(year_tmp) 
                         flag = True
                 elif flag == True:
                     team_tmp = txt.text
@@ -76,7 +76,7 @@ for league in leagueli:
                 if(index % 3 == 0):
                     payment = txt.text
                     if(payment != "") :
-                        pay_store.append(payment)
+                        pay_store.append(payment * 52) # 52를 곱해서 연봉이 들어가게끔
         
             # 초과하는 부분들은 crop시킴
             if len(pay_store) > len(year_store):
