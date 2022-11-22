@@ -19,7 +19,7 @@ chrome_options.add_experimental_option("excludeSwitches",['enable-logging'])
 service = Service(executable_path = ChromeDriverManager().install())
 driver = webdriver.Chrome(service = service, options = chrome_options)
 
-driver.implicitly_wait(3)
+driver.implicitly_wait(10)
 driver.maximize_window()
 
 leagueli = ['premier_league','serie_a',"la_liga",'bundesliga','ligue_1','eredivisie']
@@ -48,7 +48,6 @@ for league in leagueli:
             uefa_store = []
             pay_store = []
             player_name = _.contents[1]
-            player_index.append(player_name)
 
             driver.get(url_player + _["href"])
             response = requests.get(url_player + _["href"],headers = header)
@@ -88,10 +87,10 @@ for league in leagueli:
             team_store.reverse()
             pay_store.reverse()
 
-            # 10초과분 전부 다 자름
-            year_store = year_store[max(-len(year_store), -10) : ]
-            team_store = team_store[max(-len(team_store), -10) : ]
-            pay_store  = pay_store[max(-len(pay_store), -10) : ]
+            # 9초과분 전부 다 자름
+            year_store = year_store[max(-len(year_store), -9) : ]
+            team_store = team_store[max(-len(team_store), -9) : ]
+            pay_store  = pay_store[max(-len(pay_store), -9) : ]
             
             team_exist = True
             for _ in range(len(year_store)):
@@ -108,29 +107,30 @@ for league in leagueli:
             if team_exist == False:
                 continue
             
-            # 10년치 중에 빈 데이터가 존재하는 경우 : "-"로 채우고 나중에 masking 처리함
-            if len(year_store) < 10:
-                for _ in range(10 - len(year_store)):
+            # 9년치 중에 빈 데이터가 존재하는 경우 : "-"로 채우고 나중에 masking 처리함
+            if len(year_store) < 9:
+                for _ in range(9 - len(year_store)):
                     year_store.append("-")
 
-            if len(team_store) < 10:
-                for _ in range(10 - len(team_store)):
+            if len(team_store) < 9:
+                for _ in range(9 - len(team_store)):
                     team_store.append("-")
 
-            if len(uefa_store) < 10:
-                for _ in range(10 - len(uefa_store)):
+            if len(uefa_store) < 9:
+                for _ in range(9 - len(uefa_store)):
                     uefa_store.append("-")
 
-            if len(pay_store) < 10:
-                for _ in range(10 - len(pay_store)):
+            if len(pay_store) < 9:
+                for _ in range(9 - len(pay_store)):
                     pay_store.append("-")
         
-            for i in range(10):
+            player_index.append(player_name)
+            for i in range(9):
                 output.append(year_store[i])
                 output.append(team_store[i])
                 output.append(uefa_store[i])
                 output.append(pay_store[i])
 
-    output = np.array(output).reshape(-1, 40)
+    output = np.array(output).reshape(-1, 36)
     output = pd.DataFrame(output, index = player_index)
     output.to_csv('./datasets/player_' + league + ".csv", sep = ",")
