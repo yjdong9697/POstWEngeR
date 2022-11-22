@@ -31,10 +31,9 @@ url_player = "https://capology.com"
 uefa_coefficient = pd.read_csv("datasets/uefa/uefa_result.csv", index_col = 0)
 # 출력 예시 : print(uefa_coefficient.loc["Real Madrid"]["2012-2013"])
 
-player_index = []
-output = []
-
 for league in leagueli:
+    player_index = []
+    output = []
     url = url_pre + league + url_post
     page = open(url, 'rt', encoding = 'utf-8').read()
     soup = BeautifulSoup(page, 'html.parser') 
@@ -133,7 +132,6 @@ for league in leagueli:
                 output.append(uefa_store[i])
                 output.append(pay_store[i])
 
-output = np.array(output).reshape(-1, 40)
-output = pd.DataFrame(output, index = player_index)
-
-output.to_csv('./datasets/year,team,uefa,pay.csv', sep = ",")
+    output = np.array(output).reshape(-1, 40)
+    output = pd.DataFrame(output, index = player_index)
+    output.to_csv('./datasets/player_' + league + ".csv", sep = ",")
