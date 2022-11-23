@@ -60,7 +60,7 @@ for league in leagueli:
                 if(index % 2 == 0):
                     year_tmp = txt.text
                     # 2023-2024년 이후부터는 자름
-                    if(year_tmp >= '2022-2023' or prev_year == year_tmp):
+                    if(year_tmp >= '2022-2023' or prev_year == year_tmp or year_tmp < '2012-2013'):
                         flag = False
                         continue
                     else:
@@ -86,11 +86,6 @@ for league in leagueli:
             year_store.reverse()
             team_store.reverse()
             pay_store.reverse()
-
-            # 9초과분 전부 다 자름
-            year_store = year_store[max(-len(year_store), -9) : ]
-            team_store = team_store[max(-len(team_store), -9) : ]
-            pay_store  = pay_store[max(-len(pay_store), -9) : ]
             
             team_exist = True
             for _ in range(len(year_store)):
@@ -108,29 +103,29 @@ for league in leagueli:
                 continue
             
             # 9년치 중에 빈 데이터가 존재하는 경우 : "-"로 채우고 나중에 masking 처리함
-            if len(year_store) < 9:
-                for _ in range(9 - len(year_store)):
+            if len(year_store) < 10:
+                for _ in range(10 - len(year_store)):
                     year_store.append("-")
 
-            if len(team_store) < 9:
-                for _ in range(9 - len(team_store)):
+            if len(team_store) < 10:
+                for _ in range(10 - len(team_store)):
                     team_store.append("-")
 
-            if len(uefa_store) < 9:
-                for _ in range(9 - len(uefa_store)):
+            if len(uefa_store) < 10:
+                for _ in range(10 - len(uefa_store)):
                     uefa_store.append("-")
 
-            if len(pay_store) < 9:
-                for _ in range(9 - len(pay_store)):
+            if len(pay_store) < 10:
+                for _ in range(10 - len(pay_store)):
                     pay_store.append("-")
         
             player_index.append(player_name)
-            for i in range(9):
+            for i in range(10):
                 output.append(year_store[i])
                 output.append(team_store[i])
                 output.append(uefa_store[i])
                 output.append(pay_store[i])
 
-    output = np.array(output).reshape(-1, 36)
+    output = np.array(output).reshape(-1, 40)
     output = pd.DataFrame(output, index = player_index)
-    output.to_csv('./datasets/player_' + league + ".csv", sep = ",")
+    output.to_csv('./datasets/player_' + league + "_(year_team_uefa_pay).csv", sep = ",")
