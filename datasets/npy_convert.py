@@ -3,8 +3,9 @@ import pandas as pd
 
 window_size = 3 # 몇 년을 window 사이즈로 잡을 것인지
 
-x = np.empty((0, 17), float)
-y = np.empty((0, 1), float)
+encoder_x = np.empty((0, 16), float)
+decoder_x = np.empty((0, 3), float)
+y = np.empty((0, 3), float)
 
 for i in range(1, 399):
     url = "./datasets/players/" + str(i) + ".csv"
@@ -20,15 +21,20 @@ for i in range(1, 399):
 
     for i in range(window_size - 1, t_numpy.shape[0] - 1):
         tmp = t_numpy[i - (window_size - 1) : i + 1]
-        x = np.append(x, tmp, axis = 0)
-        y = np.append(y, t_numpy[i + 1, 1])
+        tmp = np.delete(tmp, 1, axis = 1)
+        encoder_x = np.append(encoder_x, tmp, axis = 0)
+        decoder_x = np.append(y, t_numpy[i - (window_size - 1) : i + 1, 1])
+        y = np.append(y, t_numpy[i - (window_size - 1) + 1 : i + 2, 1])
         
 
-x = np.reshape(x, (-1, 3, 17))
-y = np.reshape(y, (-1, 1))
+encoder_x = np.reshape(encoder_x, (-1, 3, 16))
+decoder_x = np.reshape(decoder_x, (-1, 3))
+y = np.reshape(y, (-1, 3))
 
-print(x.shape)
+print(encoder_x.shape)
+print(decoder_x.shape)
 print(y.shape)
 
-np.save("./datasets/saved_x", x)
+np.save("./datasets/saved_encoder_x", encoder_x)
+np.save("./datasets/saved_decoder_x", decoder_x)
 np.save("./datasets/saved_y", y)
