@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
 
-window_size = 3 # 몇 년을 window 사이즈로 잡을 것인지
+window_size = 7 # 몇 년을 window 사이즈로 잡을 것인지
 
 encoder_x = np.empty((0, 17), float)
-decoder_x = np.empty((0, 3), float)
-y = np.empty((0, 3), float)
+decoder_x = np.empty((0, window_size), float)
+y = np.empty((0, window_size), float)
 
 for i in range(1, 522):
     url = "./datasets/players/" + str(i) + ".csv"
@@ -28,14 +28,14 @@ for i in range(1, 522):
         y = np.append(y, t_numpy[i - (window_size - 1) + 1 : i + 2, 1])
 
 
-encoder_x = np.reshape(encoder_x, (-1, 3 * 17))
-decoder_x = np.reshape(decoder_x, (-1, 3))
+encoder_x = np.reshape(encoder_x, (-1, window_size * 17))
+decoder_x = np.reshape(decoder_x, (-1, window_size))
 
 x = np.concatenate((encoder_x, decoder_x), axis=1)
-y = np.reshape(y, (-1, 3))
+y = np.reshape(y, (-1, window_size))
 
 print(x.shape)
 print(y.shape)
 
-np.save("./datasets/saved_x", x)
-np.save("./datasets/saved_y", y)
+np.save("./datasets/saved_x_" + str(window_size), x)
+np.save("./datasets/saved_y_"+ str(window_size), y)
