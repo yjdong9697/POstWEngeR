@@ -8,7 +8,7 @@ class Encoder(nn.Module):
         self.n_layer = n_layer
         self.layers = nn.ModuleList([copy.deepcopy(encoder_block) for _ in range(n_layer)])
         self.norm = norm
-    
+
     def forward(self, src, src_mask):
         out = src
         for layer in self.layers:

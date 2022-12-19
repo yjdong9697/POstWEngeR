@@ -1,22 +1,21 @@
 import torch.nn as nn
 import copy
 import torch
-from models.embedding.tokenEmbedding import TokenEmbedding
-from models.embedding.positionalEncoding import PositionalEncoding
-from models.embedding.transformerEmbedding import TransformerEmbedding
-from models.subLayer.multiHeadAttentionLayer import MultiHeadAttentionLayer
-from models.subLayer.positionWiseFeedForwardLayer import PositionWiseFeedForwardLayer
-from models.encoder.encoder import Encoder
-from models.encoder.encoderBlock import EncoderBlock
-from models.decoder.decoder import Decoder
-from models.decoder.decoderBlock import DecoderBlock
-from models.transformer.transformer import Transformer
+from model.embedding.tokenEmbedding import TokenEmbedding
+from model.embedding.positionalEncoding import PositionalEncoding
+from model.embedding.transformerEmbedding import TransformerEmbedding
+from model.subLayer.multiHeadAttentionLayer import MultiHeadAttentionLayer
+from model.subLayer.positionWiseFeedForwardLayer import PositionWiseFeedForwardLayer
+from model.encoder.encoder import Encoder
+from model.encoder.encoderBlock import EncoderBlock
+from model.decoder.decoder import Decoder
+from model.decoder.decoderBlock import DecoderBlock
+from model.transformer.transformer import Transformer
 
 def build_model(src_vocab_size,
                 tgt_vocab_size,
                 device=torch.device("cpu"),
                 max_len = 256,
-                d_embed = 512,
                 n_layer = 6,
                 d_model = 512,
                 h = 8,
@@ -24,6 +23,7 @@ def build_model(src_vocab_size,
                 dr_rate = 0.1,
                 norm_eps = 1e-5):
 
+    d_embed = d_model
     src_token_embed = TokenEmbedding(
                                      d_embed = d_embed,
                                      vocab_size = src_vocab_size)
@@ -54,6 +54,7 @@ def build_model(src_vocab_size,
                                                fc1 = nn.Linear(d_embed, d_ff),
                                                fc2 = nn.Linear(d_ff, d_embed),
                                                dr_rate = dr_rate)
+    
     norm = nn.LayerNorm(d_embed, eps = norm_eps)
 
     encoder_block = EncoderBlock(
@@ -89,7 +90,8 @@ def build_model(src_vocab_size,
                         tgt_embed = tgt_embed,
                         encoder = encoder,
                         decoder = decoder,
-                        generator = generator).to(device)
+                        generator = generator,
+                        window_size = max_len).to(device)
     model.device = device
 
     return model

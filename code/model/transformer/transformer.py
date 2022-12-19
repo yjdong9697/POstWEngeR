@@ -4,13 +4,14 @@ import torch
 import torch.nn.functional as F
 
 class Transformer(nn.Module):
-    def __init__(self, src_embed, tgt_embed, encoder, decoder, generator):
+    def __init__(self, src_embed, tgt_embed, encoder, decoder, generator, window_size):
         super(Transformer, self).__init__()
         self.src_embed = src_embed
         self.tgt_embed = tgt_embed
         self.encoder = encoder
         self.decoder = decoder
         self.generator = generator
+        self.window_size = window_size
 
     def encode(self, src, src_mask):
         return self.encoder(self.src_embed(src), src_mask)
@@ -19,10 +20,11 @@ class Transformer(nn.Module):
         return self.decoder(self.tgt_embed(tgt), encoder_out, tgt_mask, src_tgt_mask)
 
     def forward(self, x):
-        src = x[:,0:48]
-        src = src.view([-1, 3, 16])
-        tgt = x[:,48:]
-        tgt = tgt.view([-1, 3, 1])
+
+        src = x[:,0:17*self.window_size]
+        src = src.view([-1, self.window_size, 17])
+        tgt = x[:,17*self.window_size:]
+        tgt = tgt.view([-1, self.window_size, 1])
         src_mask = self.make_src_mask(src)
         tgt_mask = self.make_tgt_mask(tgt)
         src_tgt_mask = self.make_src_tgt_mask(src, tgt)
@@ -68,7 +70,7 @@ class Transformer(nn.Module):
 
         is_cuda = torch.cuda.is_available()
         device = torch.device('cuda' if is_cuda else 'cpu')
-        mask = torch.ones(size=(query.size(0), 1, 3, 3), dtype=bool).to(device)
+        mask = torch.ones(size=(query.size(0), 1, self.window_size, self.window_size), dtype=bool).to(device)
         return mask
 
 
